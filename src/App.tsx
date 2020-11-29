@@ -1,26 +1,39 @@
 import React, {useEffect, useState} from 'react';
 import {Counter} from "./components/Counter";
 import './App.css';
-import {numbers$} from "./services/timer";
+import {IArticle} from "./models/article";
+import {articles$} from "./services/articles";
 
 function App() {
-  const [number, setNumber] = useState(0);
+  const [articles, setArticles] = useState<IArticle[]>([]);
   useEffect(() => {
-    const sub = numbers$.subscribe((value) => {
-      console.log('number', value);
-      setNumber(value);
+    const sub = articles$.subscribe((value) => {
+      console.log('article', value);
+      setArticles(v => [...v, value]);
     });
     return () => {
       sub.unsubscribe();
     };
   }, [])
   return (
-    <div className="App">
-      <header className="App-header">
-        {number}
-        <Counter />
-        <Counter step={2} />
-      </header>
+    <div>
+      <table>
+        <tr>
+          <td>
+            <Counter />
+            <Counter step={2} />
+          </td>
+          <td>
+            <ol>
+              {articles.map(article => (
+                <li key={article.id}>
+                  {article.name}
+                </li>
+              ))}
+            </ol>
+          </td>
+        </tr>
+      </table>
     </div>
   );
 }

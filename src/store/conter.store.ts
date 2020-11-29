@@ -1,0 +1,1 @@
+export const counterStore = null;
