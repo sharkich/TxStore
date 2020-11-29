@@ -1,21 +1,23 @@
-import {Article} from "../models/article";
-import {TxStore} from "../TxStore/TxStore";
-import {articlesStore} from "./articles.store";
+import { Article } from '../models/article';
+import { TxStore } from '../TxStore/TxStore';
+import { IArticleActions } from './articles.store';
 
 export interface AppState {
   ui: {
     isLoading: boolean;
     error: Error | null;
-  },
+  };
   entities: {
     articles: {
       ids: string[];
       entities: {
         [key: string]: Article;
       };
-    }
-  }
+    };
+  };
 }
+
+export type AppActions = IArticleActions;
 
 const store: AppState = {
   ui: {
@@ -25,12 +27,11 @@ const store: AppState = {
   entities: {
     articles: {
       ids: [],
-      entities: {}
-    }
-  }
+      entities: {},
+    },
+  },
 };
 
 // export type AppState = typeof store;
 
-export const appStore = new TxStore('app', store);
-
+export const appStore = new TxStore<AppState, AppActions>('app', store);

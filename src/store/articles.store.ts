@@ -1,36 +1,36 @@
-import {Article} from "../models/article";
-import {TxAction} from "../TxStore/TxAction";
-import {TxStore} from "../TxStore/TxStore";
+import { IArticle } from '../models/article';
+import { IAnyAction } from '../TxStore/TxAction';
 
-export interface ArticleState {
-  ids: string[];
-  entities: {
-    [key: string]: Article;
-  };
+// Types
+
+export enum ArticleActionTypes {
+  Add = 'Add',
+  Remove = 'Remove',
 }
 
-export const articlesStore = new TxStore<ArticleState>('article', {
-  ids: [],
-  entities: {}
-});
+// Interfaces
 
-export const addArticleAction = articlesStore.action('add').create();
+export interface IAddAction extends IAnyAction {
+  type: ArticleActionTypes.Add;
+  payload: IArticle;
+}
 
-articlesStore.action<Article>('add').resolve((state: ArticleState, payload) => ({
-  ...state,
-  ids: [...state.ids, payload.id],
-  entities: {
-    ...state.entities,
-    [payload.id]: payload
-  },
-}));
+export interface IRemoveAction extends IAnyAction {
+  type: ArticleActionTypes.Remove;
+  payload: string;
+}
 
-articlesStore.action<string>('remove').resolve((state: ArticleState, payload) => {
-  const entities = {...state.entities};
-  delete entities[payload];
-  return {
-    ...state,
-    ids: state.ids.filter(id => id !== payload),
-    entities,
-  };
-});
+// Combine
+
+export type IArticleActions = IAddAction | IRemoveAction;
+
+export const articles = {
+  add: (payload: IArticle): IAddAction => ({
+    type: ArticleActionTypes.Add,
+    payload,
+  }),
+  remove: (payload: string): IRemoveAction => ({
+    type: ArticleActionTypes.Remove,
+    payload,
+  }),
+};
