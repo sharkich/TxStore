@@ -2,19 +2,23 @@ import React, {useEffect, useState} from 'react';
 import {Counter} from "./components/Counter";
 import './App.css';
 import {IArticle} from "./models/article";
-import {articles$} from "./services/articles";
+import {articles$} from "./services/articles.service";
+import {appStore} from "./store/app.store";
 
 function App() {
-  const [articles, setArticles] = useState<IArticle[]>([]);
-  useEffect(() => {
-    const sub = articles$.subscribe((value) => {
-      console.log('article', value);
-      setArticles(v => [...v, value]);
-    });
-    return () => {
-      sub.unsubscribe();
-    };
-  }, [])
+  const articles = appStore.useState((state) => state.entities.articles);
+
+  // const [articles, setArticles] = useState<IArticle[]>([]);
+  // useEffect(() => {
+  //   const sub = articles$.subscribe((value) => {
+  //     console.log('article', value);
+  //     setArticles(v => [...v, value]);
+  //   });
+  //   return () => {
+  //     sub.unsubscribe();
+  //   };
+  // }, []);
+
   return (
     <div>
       <table>
