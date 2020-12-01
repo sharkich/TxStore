@@ -1,3 +1,4 @@
+import { cloneDeep, isEqual } from 'lodash';
 import { useEffect, useState } from 'react';
 import { BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -8,7 +9,7 @@ export class TxStore<State, Actions extends IAnyAction> {
   private lastState: State;
   // TODO: Avoid any
   private readonly reducers: Array<{
-    reducer: (action: Actions, getState: () => any) => void;
+    reducer: (action: Actions, state: any) => void;
     mapper: (state: State) => any;
   }> = [];
 
@@ -22,8 +23,7 @@ export class TxStore<State, Actions extends IAnyAction> {
     const [data, setData] = useState<T | null>(null);
     useEffect(() => {
       const subscription = this.state$.pipe(map(mapper)).subscribe((state) => {
-        // TODO: Check is in necessary to update the store
-        setData({ ...state });
+        setData((old) => (isEqual(old, state) ? old : { ...state }));
       });
       return () => {
         subscription.unsubscribe();
@@ -32,10 +32,7 @@ export class TxStore<State, Actions extends IAnyAction> {
     return data;
   }
 
-  reduce<LocalState>(
-    reducer: (action: Actions, getState: () => LocalState) => void,
-    mapper: (state: State) => LocalState
-  ) {
+  reduce<LocalState>(reducer: (action: Actions, state: LocalState) => void, mapper: (state: State) => LocalState) {
     this.reducers.push({
       reducer,
       mapper,
@@ -43,14 +40,10 @@ export class TxStore<State, Actions extends IAnyAction> {
   }
 
   action(action: Actions) {
-    const newState = this.reducers.reduce(
-      (state, reducer) => {
-        reducer.reducer(action, () => reducer.mapper(state));
-        return state;
-      },
-      // TODO: Deep clone of the store to avoid mutate it
-      { ...this.lastState }
-    );
+    const newState = this.reducers.reduce((state, reducer) => {
+      reducer.reducer(action, reducer.mapper(state));
+      return state;
+    }, cloneDeep(this.lastState));
     console.log('action', action, newState);
     this.state$.next(newState);
   }

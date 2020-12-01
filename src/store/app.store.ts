@@ -27,4 +27,4 @@ const INIT_APP_STATE: AppState = {
 
 export const appStore = new TxStore<AppState, AppActions>('app', INIT_APP_STATE);
 
-appStore.reduce<ArticlesStore.State>(ArticlesStore.reducers, (state) => state.entities.articles);
+appStore.reduce(ArticlesStore.reducers, (state) => state.entities.articles);

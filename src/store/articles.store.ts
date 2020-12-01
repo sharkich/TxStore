@@ -60,16 +60,14 @@ export namespace ArticlesStore {
 
   // Reducers
 
-  export const reducers = (action: IActions, getState: () => State) => {
+  export const reducers = (action: IActions, state: State) => {
     if (isAddAction(action)) {
       const { payload } = action;
-      const state = getState();
       state.ids.push(payload.id);
       state.entities[payload.id] = payload;
     }
     if (isRemoveAction(action)) {
       const { payload } = action;
-      const state = getState();
       state.ids = state.ids.filter((id) => id !== payload);
       delete state.entities[payload];
     }
