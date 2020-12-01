@@ -1,6 +1,5 @@
 import { Article, IArticle } from '../models/article';
 import { IAnyAction } from '../TxStore/TxAction';
-import { AppState } from './app.store';
 
 export namespace ArticlesStore {
   // State
