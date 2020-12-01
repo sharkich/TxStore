@@ -4,7 +4,6 @@ export interface IArticle {
   created: Date;
 }
 
-export class Article implements  IArticle {
-  constructor(public id: string, public name: string, public created: Date = new Date()) {
-  }
+export class Article implements IArticle {
+  constructor(public id: string, public name: string, public created: Date = new Date()) {}
 }

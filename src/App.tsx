@@ -1,42 +1,23 @@
-import React, {useEffect, useState} from 'react';
-import {Counter} from "./components/Counter";
+import React from 'react';
 import './App.css';
-import {IArticle} from "./models/article";
-import {articles$} from "./services/articles.service";
-import {appStore} from "./store/app.store";
+import { Articles } from './components/Articles';
+import { Counter } from './components/Counter';
 
 function App() {
-  const articles = appStore.useState((state) => state.entities.articles);
-
-  // const [articles, setArticles] = useState<IArticle[]>([]);
-  // useEffect(() => {
-  //   const sub = articles$.subscribe((value) => {
-  //     console.log('article', value);
-  //     setArticles(v => [...v, value]);
-  //   });
-  //   return () => {
-  //     sub.unsubscribe();
-  //   };
-  // }, []);
-
   return (
     <div>
       <table>
-        <tr>
-          <td>
-            <Counter />
-            <Counter step={2} />
-          </td>
-          <td>
-            <ol>
-              {articles.map(article => (
-                <li key={article.id}>
-                  {article.name}
-                </li>
-              ))}
-            </ol>
-          </td>
-        </tr>
+        <tbody>
+          <tr>
+            <td>
+              <Counter />
+              <Counter step={2} />
+            </td>
+            <td>
+              <Articles />
+            </td>
+          </tr>
+        </tbody>
       </table>
     </div>
   );

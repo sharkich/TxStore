@@ -1,6 +1,5 @@
-import { Article } from '../models/article';
 import { TxStore } from '../TxStore/TxStore';
-import { IArticleActions } from './articles.store';
+import { ArticleActionTypes, ARTICLES_INIT_STATE, ArticlesState, IArticleActions, reducers } from './articles.store';
 
 export interface AppState {
   ui: {
@@ -8,30 +7,26 @@ export interface AppState {
     error: Error | null;
   };
   entities: {
-    articles: {
-      ids: string[];
-      entities: {
-        [key: string]: Article;
-      };
-    };
+    articles: ArticlesState;
   };
 }
 
 export type AppActions = IArticleActions;
 
-const store: AppState = {
+export type AppActionTypes = ArticleActionTypes;
+
+const INIT_APP_STATE: AppState = {
   ui: {
     isLoading: false,
     error: null,
   },
   entities: {
-    articles: {
-      ids: [],
-      entities: {},
-    },
+    articles: ARTICLES_INIT_STATE,
   },
 };
 
 // export type AppState = typeof store;
 
-export const appStore = new TxStore<AppState, AppActions>('app', store);
+export const appStore = new TxStore<AppState, AppActions>('app', INIT_APP_STATE);
+
+appStore.reduce(reducers);
