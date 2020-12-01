@@ -1,5 +1,5 @@
 import { TxStore } from '../TxStore/TxStore';
-import { ArticleActionTypes, ARTICLES_INIT_STATE, ArticlesState, IArticleActions, reducers } from './articles.store';
+import { Articles } from './articles.store';
 
 export interface AppState {
   ui: {
@@ -7,13 +7,13 @@ export interface AppState {
     error: Error | null;
   };
   entities: {
-    articles: ArticlesState;
+    articles: Articles.ArticlesState;
   };
 }
 
-export type AppActions = IArticleActions;
+export type AppActions = Articles.IArticleActions;
 
-export type AppActionTypes = ArticleActionTypes;
+export type AppActionTypes = Articles.ArticleActionTypes;
 
 const INIT_APP_STATE: AppState = {
   ui: {
@@ -21,7 +21,7 @@ const INIT_APP_STATE: AppState = {
     error: null,
   },
   entities: {
-    articles: ARTICLES_INIT_STATE,
+    articles: Articles.ARTICLES_INIT_STATE,
   },
 };
 
@@ -29,4 +29,4 @@ const INIT_APP_STATE: AppState = {
 
 export const appStore = new TxStore<AppState, AppActions>('app', INIT_APP_STATE);
 
-appStore.reduce(reducers);
+appStore.reduce(Articles.reducers);

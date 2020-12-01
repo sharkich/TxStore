@@ -1,7 +1,7 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 
 interface Props {
-  step?: number
+  step?: number;
 }
 
 export const Counter: React.FC<Props> = ({ step }) => {
