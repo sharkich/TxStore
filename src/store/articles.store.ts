@@ -5,6 +5,7 @@ export namespace ArticlesStore {
   // State
 
   export interface State {
+    isLoading: boolean;
     ids: string[];
     entities: {
       [key: string]: Article;
@@ -12,6 +13,7 @@ export namespace ArticlesStore {
   }
 
   export const INIT_STATE: State = {
+    isLoading: false,
     ids: [],
     entities: {},
   };
@@ -21,6 +23,7 @@ export namespace ArticlesStore {
   enum ActionTypes {
     Add = 'Add',
     Remove = 'Remove',
+    ToggleLoading = 'ToggleLoading',
   }
 
   // Interfaces
@@ -35,9 +38,13 @@ export namespace ArticlesStore {
     payload: string;
   }
 
+  interface IToggleLoadingAction extends IAnyAction {
+    type: ActionTypes.ToggleLoading;
+  }
+
   // Combine
 
-  export type IActions = IAddAction | IRemoveAction;
+  export type IActions = IAddAction | IRemoveAction | IToggleLoadingAction;
 
   // Action Creators
 
@@ -50,12 +57,17 @@ export namespace ArticlesStore {
       type: ActionTypes.Remove,
       payload,
     }),
+    toggleLoading: (): IToggleLoadingAction => ({
+      type: ActionTypes.ToggleLoading,
+    }),
   };
 
   // Castings
 
   const isAddAction = (action: IAnyAction): action is IAddAction => action.type === ActionTypes.Add;
   const isRemoveAction = (action: IAnyAction): action is IRemoveAction => action.type === ActionTypes.Remove;
+  const isToggleLoadingAction = (action: IAnyAction): action is IToggleLoadingAction =>
+    action.type === ActionTypes.ToggleLoading;
 
   // Reducers
 
@@ -64,11 +76,21 @@ export namespace ArticlesStore {
       const { payload } = action;
       state.ids.push(payload.id);
       state.entities[payload.id] = payload;
+      return;
     }
     if (isRemoveAction(action)) {
       const { payload } = action;
       state.ids = state.ids.filter((id) => id !== payload);
       delete state.entities[payload];
+      return;
+    }
+    if (isToggleLoadingAction(action)) {
+      state.isLoading = !state.isLoading;
+      if (state.isLoading) {
+        state.ids = [];
+        state.entities = {};
+      }
+      return;
     }
   };
 }
