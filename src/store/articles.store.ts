@@ -19,7 +19,7 @@ export namespace ArticlesStore {
 
   // Types
 
-  export enum ActionTypes {
+  enum ActionTypes {
     Add = 'Add',
     Remove = 'Remove',
   }
@@ -40,11 +40,6 @@ export namespace ArticlesStore {
 
   export type IActions = IAddAction | IRemoveAction;
 
-  // Castings
-
-  const isAddAction = (action: IAnyAction): action is IAddAction => action.type === ActionTypes.Add;
-  const isRemoveAction = (action: IAnyAction): action is IRemoveAction => action.type === ActionTypes.Remove;
-
   // Action Creators
 
   export const actions = {
@@ -58,21 +53,25 @@ export namespace ArticlesStore {
     }),
   };
 
+  // Castings
+
+  const isAddAction = (action: IAnyAction): action is IAddAction => action.type === ActionTypes.Add;
+  const isRemoveAction = (action: IAnyAction): action is IRemoveAction => action.type === ActionTypes.Remove;
+
   // Reducers
 
-  export const reducers = (state: AppState, action: IActions) => {
+  export const reducers = (action: IActions, getState: () => State) => {
     if (isAddAction(action)) {
       const { payload } = action;
-      state.entities.articles.ids.push(payload.id);
-      state.entities.articles.entities[payload.id] = payload;
-      return state;
+      const state = getState();
+      state.ids.push(payload.id);
+      state.entities[payload.id] = payload;
     }
     if (isRemoveAction(action)) {
       const { payload } = action;
-      state.entities.articles.ids = state.entities.articles.ids.filter((id) => id !== payload);
-      delete state.entities.articles.entities[payload];
-      return state;
+      const state = getState();
+      state.ids = state.ids.filter((id) => id !== payload);
+      delete state.entities[payload];
     }
-    return state;
   };
 }

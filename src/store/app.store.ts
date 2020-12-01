@@ -13,8 +13,6 @@ export interface AppState {
 
 export type AppActions = ArticlesStore.IActions;
 
-export type AppActionTypes = ArticlesStore.ActionTypes;
-
 const INIT_APP_STATE: AppState = {
   ui: {
     isLoading: false,
@@ -29,4 +27,4 @@ const INIT_APP_STATE: AppState = {
 
 export const appStore = new TxStore<AppState, AppActions>('app', INIT_APP_STATE);
 
-appStore.reduce(ArticlesStore.reducers);
+appStore.reduce<ArticlesStore.State>(ArticlesStore.reducers, (state) => state.entities.articles);
