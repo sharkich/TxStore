@@ -2,66 +2,65 @@ import { Article, IArticle } from '../models/article';
 import { IAnyAction } from '../TxStore/TxAction';
 import { AppState } from './app.store';
 
-export namespace Articles {
+export namespace ArticlesStore {
   // State
 
-  export interface ArticlesState {
+  export interface State {
     ids: string[];
     entities: {
       [key: string]: Article;
     };
   }
 
-  export const ARTICLES_INIT_STATE: ArticlesState = {
+  export const INIT_STATE: State = {
     ids: [],
     entities: {},
   };
 
   // Types
 
-  export enum ArticleActionTypes {
+  export enum ActionTypes {
     Add = 'Add',
     Remove = 'Remove',
   }
 
   // Interfaces
 
-  export interface IAddAction extends IAnyAction {
-    type: ArticleActionTypes.Add;
+  interface IAddAction extends IAnyAction {
+    type: ActionTypes.Add;
     payload: IArticle;
   }
 
-  export interface IRemoveAction extends IAnyAction {
-    type: ArticleActionTypes.Remove;
+  interface IRemoveAction extends IAnyAction {
+    type: ActionTypes.Remove;
     payload: string;
   }
 
   // Combine
 
-  export type IArticleActions = IAddAction | IRemoveAction;
+  export type IActions = IAddAction | IRemoveAction;
 
   // Castings
 
-  export const isAddAction = (action: IAnyAction): action is IAddAction => action.type === ArticleActionTypes.Add;
-  export const isRemoveAction = (action: IAnyAction): action is IRemoveAction =>
-    action.type === ArticleActionTypes.Remove;
+  const isAddAction = (action: IAnyAction): action is IAddAction => action.type === ActionTypes.Add;
+  const isRemoveAction = (action: IAnyAction): action is IRemoveAction => action.type === ActionTypes.Remove;
 
   // Action Creators
 
   export const actions = {
     add: (payload: IArticle): IAddAction => ({
-      type: ArticleActionTypes.Add,
+      type: ActionTypes.Add,
       payload,
     }),
     remove: (payload: string): IRemoveAction => ({
-      type: ArticleActionTypes.Remove,
+      type: ActionTypes.Remove,
       payload,
     }),
   };
 
   // Reducers
 
-  export const reducers = (state: AppState, action: IArticleActions) => {
+  export const reducers = (state: AppState, action: IActions) => {
     if (isAddAction(action)) {
       const { payload } = action;
       state.entities.articles.ids.push(payload.id);
